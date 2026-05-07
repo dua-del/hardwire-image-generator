@@ -1,17 +1,47 @@
 const express = require('express');
 const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chromium');
+const https = require('https');
 
 const app = express();
 app.use(express.json());
 
+async function uploadToImgbb(imageBuffer) {
+  const base64 = imageBuffer.toString('base64');
+  const apiKey = process.env.IMGBB_API_KEY;
+  return new Promise((resolve, reject) => {
+    const postData = `key=${apiKey}&image=${encodeURIComponent(base64)}`;
+    const options = {
+      hostname: 'api.imgbb.com',
+      path: '/1/upload',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.success) resolve(parsed.data.url);
+          else reject(new Error('imgbb error: ' + JSON.stringify(parsed)));
+        } catch (e) { reject(e); }
+      });
+    });
+    req.on('error', reject);
+    req.write(postData);
+    req.end();
+  });
+}
+
 app.get('/generate', async (req, res) => {
   const { title, image, category } = req.query;
-
   if (!title || !image) {
     return res.status(400).json({ error: 'title and image parameters required' });
   }
-
   const cat = category || 'Market News';
   const cleanImage = image.replace('/size/w2000/format/webp/', '/').replace('/size/w2000/', '/');
 
@@ -53,17 +83,16 @@ body { width:1080px; height:1080px; overflow:hidden; position:relative; font-fam
       executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
-
     const page = await browser.newPage();
     await page.setViewport({ width: 1080, height: 1080 });
     await page.setContent(html, { waitUntil: 'networkidle0', timeout: 30000 });
     await new Promise(resolve => setTimeout(resolve, 2000));
-
     const screenshot = await page.screenshot({ type: 'jpeg', quality: 90 });
+    await browser.close();
+    browser = null;
 
-    res.set('Content-Type', 'image/jpeg');
-    res.set('Content-Disposition', 'inline; filename="post.jpg"');
-    res.send(screenshot);
+    const imageUrl = await uploadToImgbb(screenshot);
+    res.json({ url: imageUrl });
 
   } catch (err) {
     console.error(err);
