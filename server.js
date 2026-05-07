@@ -57,7 +57,7 @@ body { width:1080px; height:1080px; overflow:hidden; position:relative; font-fam
     const page = await browser.newPage();
     await page.setViewport({ width: 1080, height: 1080 });
     await page.setContent(html, { waitUntil: 'networkidle0', timeout: 30000 });
-    await page.waitForTimeout(2000);
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     const screenshot = await page.screenshot({ type: 'jpeg', quality: 90 });
 
