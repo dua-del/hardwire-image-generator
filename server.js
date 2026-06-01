@@ -45,35 +45,77 @@ app.get('/generate', async (req, res) => {
   const cat = category || 'Market News';
   const cleanImage = image.replace('/size/w2000/format/webp/', '/').replace('/size/w2000/', '/');
 
-  const fontSize = title.length > 80 ? '34px' : title.length > 60 ? '40px' : title.length > 40 ? '48px' : '58px';
+  const fontSize = title.length > 80 ? '58px' : title.length > 60 ? '68px' : title.length > 40 ? '78px' : '90px';
 
   const html = `<!DOCTYPE html>
 <html>
 <head>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800;900&family=Barlow:wght@700;800&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { width:1080px; height:1080px; overflow:hidden; position:relative; font-family:'Barlow',sans-serif; }
 #bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-.overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.25) 30%,rgba(0,0,0,0.6) 55%,rgba(0,0,0,0.88) 78%,rgba(0,0,0,0.97) 100%); }
-.logo { position:absolute; top:36px; left:36px; width:210px; height:210px; background:rgba(255,255,255,0.95); border-radius:10px; padding:10px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 16px rgba(0,0,0,0.5); }
-.logo img { width:185px; height:185px; object-fit:contain; }
-.centre { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:140px 60px 120px; text-align:center; }
-.cat { display:inline-block; background:#555555; color:#fff; font-size:20px; font-weight:800; letter-spacing:4px; text-transform:uppercase; padding:10px 24px; border-radius:3px; margin-bottom:28px; }
-.headline { font-family:'Playfair Display',serif; font-size:${fontSize}; font-weight:900; color:#fff; line-height:1.22; text-shadow:0 3px 20px rgba(0,0,0,0.9); }
-.bar { position:absolute; bottom:0; left:0; right:0; background:#3a3a3a; border-top:4px solid #555555; padding:22px 40px; text-align:center; }
-.bar span { font-size:22px; font-weight:700; color:rgba(255,255,255,0.88); letter-spacing:4px; text-transform:uppercase; }
+.overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 55%,
+    rgba(0,0,0,0.55) 72%,
+    rgba(0,0,0,0.93) 100%
+  );
+}
+.top-bar {
+  position:absolute; top:0; left:0; right:0;
+  background:#000000;
+  padding:32px 48px;
+  display:flex; align-items:center; justify-content:center;
+}
+.top-bar span {
+  font-family:'Barlow',sans-serif;
+  font-size:72px;
+  font-weight:800;
+  color:#ffffff;
+  letter-spacing:8px;
+  text-transform:uppercase;
+}
+.bottom {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:0 72px 72px;
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+}
+.cat {
+  display:inline-block;
+  background:rgba(15,15,15,0.93);
+  color:#ffffff;
+  font-family:'Barlow',sans-serif;
+  font-size:24px;
+  font-weight:800;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  padding:12px 32px;
+  border-radius:3px;
+  margin-bottom:28px;
+}
+.headline {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:${fontSize};
+  font-weight:900;
+  color:#ffffff;
+  line-height:1.05;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  text-align:center;
+}
 </style>
 </head>
 <body>
 <img id="bg" src="${cleanImage}" crossorigin="anonymous"/>
 <div class="overlay"></div>
-<div class="logo"><img src="https://storage.ghost.io/c/d7/aa/d7aad060-dd57-4cbe-b662-6568207d0015/content/images/2026/04/Asset-9TheHardWireNews.png"/></div>
-<div class="centre">
+<div class="top-bar"><span>The Hardwire</span></div>
+<div class="bottom">
   <div class="cat">${cat}</div>
   <div class="headline">${title}</div>
 </div>
-<div class="bar"><span>thehardwirenews.com</span></div>
 </body>
 </html>`;
 
