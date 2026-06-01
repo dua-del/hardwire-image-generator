@@ -67,7 +67,7 @@ body { width:1080px; height:1080px; overflow:hidden; position:relative; font-fam
 .top-bar {
   position:absolute; top:0; left:0; right:0;
   background:#000000;
-  padding:20px 0;
+  padding:18px 0;
   overflow:hidden;
 }
 .bottom {
@@ -104,8 +104,17 @@ body { width:1080px; height:1080px; overflow:hidden; position:relative; font-fam
 <img id="bg" src="${cleanImage}" crossorigin="anonymous"/>
 <div class="overlay"></div>
 <div class="top-bar">
-  <svg viewBox="0 0 1080 120" width="1080" height="120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <text y="95" x="0" font-family="Barlow, sans-serif" font-weight="800" font-size="100" fill="white" textLength="1080" lengthAdjust="spacingAndGlyphs">THE HARDWIRE</text>
+  <svg viewBox="0 0 1080 140" width="1080" height="140" xmlns="http://www.w3.org/2000/svg">
+    <text
+      y="120"
+      x="30"
+      font-family="Barlow, sans-serif"
+      font-weight="800"
+      font-size="130"
+      fill="white"
+      textLength="1020"
+      lengthAdjust="spacingAndGlyphs"
+    >THE HARDWIRE</text>
   </svg>
 </div>
 <div class="bottom">
