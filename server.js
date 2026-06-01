@@ -67,16 +67,8 @@ body { width:1080px; height:1080px; overflow:hidden; position:relative; font-fam
 .top-bar {
   position:absolute; top:0; left:0; right:0;
   background:#000000;
-  padding:32px 48px;
-  display:flex; align-items:center; justify-content:center;
-}
-.top-bar span {
-  font-family:'Barlow',sans-serif;
-  font-size:72px;
-  font-weight:800;
-  color:#ffffff;
-  letter-spacing:8px;
-  text-transform:uppercase;
+  padding:20px 0;
+  overflow:hidden;
 }
 .bottom {
   position:absolute; bottom:0; left:0; right:0;
@@ -111,7 +103,11 @@ body { width:1080px; height:1080px; overflow:hidden; position:relative; font-fam
 <body>
 <img id="bg" src="${cleanImage}" crossorigin="anonymous"/>
 <div class="overlay"></div>
-<div class="top-bar"><span>The Hardwire</span></div>
+<div class="top-bar">
+  <svg viewBox="0 0 1080 120" width="1080" height="120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <text y="95" x="0" font-family="Barlow, sans-serif" font-weight="800" font-size="100" fill="white" textLength="1080" lengthAdjust="spacingAndGlyphs">THE HARDWIRE</text>
+  </svg>
+</div>
 <div class="bottom">
   <div class="cat">${cat}</div>
   <div class="headline">${title}</div>
