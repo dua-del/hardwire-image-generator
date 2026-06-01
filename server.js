@@ -105,16 +105,7 @@ body { width:1080px; height:1080px; overflow:hidden; position:relative; font-fam
 <div class="overlay"></div>
 <div class="top-bar">
   <svg viewBox="0 0 1080 140" width="1080" height="140" xmlns="http://www.w3.org/2000/svg">
-    <text
-      y="120"
-      x="30"
-      font-family="Barlow, sans-serif"
-      font-weight="800"
-      font-size="130"
-      fill="white"
-      textLength="1020"
-      lengthAdjust="spacingAndGlyphs"
-    >THE HARDWIRE</text>
+    <text y="120" x="30" font-family="Barlow, sans-serif" font-weight="800" font-size="130" fill="white" textLength="1020" lengthAdjust="spacingAndGlyphs">THE HARDWIRE</text>
   </svg>
 </div>
 <div class="bottom">
@@ -127,16 +118,48 @@ body { width:1080px; height:1080px; overflow:hidden; position:relative; font-fam
   let browser;
   try {
     browser = await puppeteer.launch({
-      args: chromium.args,
+      args: [
+        ...chromium.args,
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--disable-extensions',
+        '--disable-background-networking',
+        '--disable-default-apps',
+        '--disable-sync',
+        '--disable-translate',
+        '--hide-scrollbars',
+        '--metrics-recording-only',
+        '--mute-audio',
+        '--no-first-run',
+        '--safebrowsing-disable-auto-update',
+        '--js-flags=--max-old-space-size=256',
+      ],
       defaultViewport: { width: 1080, height: 1080 },
       executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
+
     const page = await browser.newPage();
+
+    // Block unnecessary resources to save memory
+    await page.setRequestInterception(true);
+    page.on('request', (request) => {
+      const type = request.resourceType();
+      if (['media', 'font', 'other'].includes(type)) {
+        request.abort();
+      } else {
+        request.continue();
+      }
+    });
+
     await page.setViewport({ width: 1080, height: 1080 });
     await page.setContent(html, { waitUntil: 'networkidle0', timeout: 30000 });
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    const screenshot = await page.screenshot({ type: 'jpeg', quality: 90 });
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    const screenshot = await page.screenshot({ type: 'jpeg', quality: 85 });
+
+    await page.close();
     await browser.close();
     browser = null;
 
@@ -145,9 +168,10 @@ body { width:1080px; height:1080px; overflow:hidden; position:relative; font-fam
 
   } catch (err) {
     console.error(err);
+    if (browser) {
+      try { await browser.close(); } catch(e) {}
+    }
     res.status(500).json({ error: err.message });
-  } finally {
-    if (browser) await browser.close();
   }
 });
 
